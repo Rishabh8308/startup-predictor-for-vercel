@@ -65,6 +65,14 @@ export default function PredictPage() {
 
       const data = await response.json()
       setResult(data)
+
+      // Save prediction to localStorage
+      const history = JSON.parse(localStorage.getItem("predictionHistory") || "[]")
+      history.push({
+        ...data,
+        timestamp: new Date().toISOString(),
+      })
+      localStorage.setItem("predictionHistory", JSON.stringify(history))
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally {

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import numpy as np
@@ -8,6 +9,15 @@ from typing import Dict
 model = joblib.load('model.pkl')
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PredictionRequest(BaseModel):
     funding: float
@@ -19,6 +29,7 @@ class PredictionResponse(BaseModel):
     successProbability: float
     riskLevel: str
     featureImportance: Dict[str, float]
+    breakdown: Dict[str, int]
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
@@ -52,10 +63,24 @@ def predict(request: PredictionRequest):
         for name, importance in zip(feature_names, model.feature_importances_)
     }
     
+    # Calculate normalized scores (0-100 scale) for breakdown
+    fundingScore = min(100, int((request.funding / 5000000) * 100))
+    marketScore = min(100, int((request.marketSize / 500000000) * 100))
+    teamScore = min(100, int((request.teamSize / 15) * 100))
+    experienceScore = min(100, int((request.founderExperience / 10) * 100))
+    
+    breakdown = {
+        "fundingScore": fundingScore,
+        "teamScore": teamScore,
+        "marketScore": marketScore,
+        "experienceScore": experienceScore,
+    }
+    
     return PredictionResponse(
         successProbability=success_probability,
         riskLevel=risk_level,
-        featureImportance=feature_importance
+        featureImportance=feature_importance,
+        breakdown=breakdown
     )
 
 @app.get("/health")

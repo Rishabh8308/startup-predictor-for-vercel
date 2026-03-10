@@ -30,6 +30,75 @@ class PredictionResponse(BaseModel):
     riskLevel: str
     featureImportance: Dict[str, float]
     breakdown: Dict[str, int]
+    report: Dict[str, any]
+
+def generate_investor_report(
+    success_probability: float,
+    risk_level: str,
+    funding_score: int,
+    team_score: int,
+    market_score: int,
+    experience_score: int
+) -> Dict[str, any]:
+    """
+    Generate an investor report with strengths, risks, and recommendation
+    based on startup metrics.
+    
+    Args:
+        success_probability: Overall success probability (10-95%)
+        risk_level: Risk level classification (low, medium, high)
+        funding_score: Normalized funding score (0-100)
+        team_score: Normalized team size score (0-100)
+        market_score: Normalized market size score (0-100)
+        experience_score: Normalized founder experience score (0-100)
+    
+    Returns:
+        Dictionary with 'strengths', 'risks', and 'recommendation' keys
+    """
+    strengths = []
+    risks = []
+    
+    # Identify strengths (scores above 70)
+    if funding_score > 70:
+        strengths.append("Strong funding position")
+    if team_score > 70:
+        strengths.append("Well-sized, capable team")
+    if market_score > 70:
+        strengths.append("Large addressable market opportunity")
+    if experience_score > 70:
+        strengths.append("Experienced founder team")
+    
+    # Identify risks (scores below 40)
+    if funding_score < 40:
+        risks.append("Limited funding relative to market opportunity")
+    if team_score < 40:
+        risks.append("Team is too small or underdeveloped")
+    if market_score < 40:
+        risks.append("Small market opportunity limits growth potential")
+    if experience_score < 40:
+        risks.append("Founder lacks sufficient industry experience")
+    
+    # Generate recommendation based on success probability
+    if success_probability > 75:
+        recommendation = "Strong investment opportunity. This startup demonstrates strong fundamentals across most metrics with excellent success probability. Recommended for portfolio inclusion."
+    elif success_probability > 60:
+        recommendation = "Moderately promising opportunity. While the startup shows solid metrics, there are some areas that could be strengthened. Consider as a potential investment with monitoring."
+    elif success_probability > 45:
+        recommendation = "Mixed signals. The startup has potential but faces notable challenges in key areas. Due diligence recommended before investment decision."
+    else:
+        recommendation = "High risk profile. The startup shows significant weaknesses in critical areas. Proceed with caution or pass on this opportunity."
+    
+    # If no specific strengths or risks, provide general feedback
+    if not strengths:
+        strengths.append("Adequate performance across all metrics")
+    if not risks:
+        risks.append("No critical vulnerabilities identified")
+    
+    return {
+        "strengths": strengths,
+        "risks": risks,
+        "recommendation": recommendation
+    }
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
@@ -80,11 +149,22 @@ def predict(request: PredictionRequest):
         "experienceScore": experienceScore,
     }
     
+    # Generate investor report
+    report = generate_investor_report(
+        success_probability=success_probability,
+        risk_level=risk_level,
+        funding_score=fundingScore,
+        team_score=teamScore,
+        market_score=marketScore,
+        experience_score=experienceScore
+    )
+    
     return PredictionResponse(
         successProbability=success_probability,
         riskLevel=risk_level,
         featureImportance=feature_importance,
-        breakdown=breakdown
+        breakdown=breakdown,
+        report=report
     )
 
 @app.get("/health")

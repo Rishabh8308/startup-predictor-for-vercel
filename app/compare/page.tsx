@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Scale, Sparkles, AlertCircle, CheckCircle } from "lucide-react"
+import { Scale, Sparkles, AlertCircle, CheckCircle, CheckCircle2, AlertTriangle, Target } from "lucide-react"
 
 interface PredictionResponse {
   successProbability: number
@@ -22,6 +22,11 @@ interface PredictionResponse {
     teamSize: number
     marketSize: number
     founderExperience: number
+  }
+  report: {
+    strengths: string[]
+    risks: string[]
+    recommendation: string
   }
 }
 
@@ -590,6 +595,103 @@ export default function ComparePage() {
                         style={{ width: `${comparisonResult.startupB.breakdown.experienceScore}%` }}
                       />
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Investor Reports */}
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Startup A Report */}
+              <div className="rounded-2xl border border-cyan-400/30 bg-white/10 backdrop-blur-xl p-8 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all duration-300 shadow-2xl">
+                <div className="flex items-center gap-2 mb-6">
+                  <Target className="w-5 h-5 text-cyan-400" />
+                  <h3 className="text-xl font-bold text-white">Startup A - Report</h3>
+                </div>
+
+                {/* Recommendation */}
+                <div className="mb-6 rounded-xl border border-blue-400/30 bg-blue-500/10 p-4">
+                  <p className="text-blue-200 text-sm leading-relaxed">
+                    {comparisonResult.startupA.report.recommendation}
+                  </p>
+                </div>
+
+                {/* Strengths */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <p className="text-white/80 text-sm font-semibold">Strengths</p>
+                  </div>
+                  <div className="space-y-2">
+                    {comparisonResult.startupA.report.strengths.map((strength, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-white/70 text-sm">
+                        <div className="w-1 h-1 rounded-full bg-green-400 mt-1.5 flex-shrink-0" />
+                        <span>{strength}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Risks */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    <p className="text-white/80 text-sm font-semibold">Risks</p>
+                  </div>
+                  <div className="space-y-2">
+                    {comparisonResult.startupA.report.risks.map((risk, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-white/70 text-sm">
+                        <div className="w-1 h-1 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
+                        <span>{risk}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Startup B Report */}
+              <div className="rounded-2xl border border-cyan-400/30 bg-white/10 backdrop-blur-xl p-8 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all duration-300 shadow-2xl">
+                <div className="flex items-center gap-2 mb-6">
+                  <Target className="w-5 h-5 text-cyan-400" />
+                  <h3 className="text-xl font-bold text-white">Startup B - Report</h3>
+                </div>
+
+                {/* Recommendation */}
+                <div className="mb-6 rounded-xl border border-blue-400/30 bg-blue-500/10 p-4">
+                  <p className="text-blue-200 text-sm leading-relaxed">
+                    {comparisonResult.startupB.report.recommendation}
+                  </p>
+                </div>
+
+                {/* Strengths */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <p className="text-white/80 text-sm font-semibold">Strengths</p>
+                  </div>
+                  <div className="space-y-2">
+                    {comparisonResult.startupB.report.strengths.map((strength, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-white/70 text-sm">
+                        <div className="w-1 h-1 rounded-full bg-green-400 mt-1.5 flex-shrink-0" />
+                        <span>{strength}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Risks */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    <p className="text-white/80 text-sm font-semibold">Risks</p>
+                  </div>
+                  <div className="space-y-2">
+                    {comparisonResult.startupB.report.risks.map((risk, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-white/70 text-sm">
+                        <div className="w-1 h-1 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
+                        <span>{risk}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

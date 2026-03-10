@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AIExplanationChart } from "@/components/ai-explanation-chart"
 import { InvestorReport } from "@/components/investor-report"
-import { Sparkles, DollarSign, Users, TrendingUp, Award } from "lucide-react"
+import { Sparkles, DollarSign, Users, TrendingUp, Award, CheckCircle2, AlertCircle, Target } from "lucide-react"
 
 interface PredictionResponse {
   successProbability: number
@@ -24,6 +24,11 @@ interface PredictionResponse {
     teamSize: number
     marketSize: number
     founderExperience: number
+  }
+  report: {
+    strengths: string[]
+    risks: string[]
+    recommendation: string
   }
 }
 
@@ -190,6 +195,59 @@ export default function PredictPage() {
             {/* AI Explanation Chart */}
             <div className="mt-8">
               <AIExplanationChart featureImportance={result.featureImportance} />
+            </div>
+
+            {/* AI Investor Report */}
+            <div className="mt-8 rounded-2xl border border-cyan-400/30 bg-white/10 backdrop-blur-xl p-8 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all duration-300 shadow-2xl">
+              <h3 className="text-2xl font-bold text-white mb-8">AI Investor Report</h3>
+              
+              {/* Recommendation Card */}
+              <div className="mb-8 rounded-2xl border border-blue-400/30 bg-blue-500/10 p-6">
+                <div className="flex items-start gap-4">
+                  <Target className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <p className="text-white/60 text-sm font-semibold mb-2">RECOMMENDATION</p>
+                    <p className="text-white leading-relaxed">
+                      {result.report.recommendation}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Strengths and Risks Grid */}
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Strengths */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <CheckCircle2 className="w-5 h-5 text-green-400" />
+                    <h4 className="text-lg font-semibold text-white">Strengths</h4>
+                  </div>
+                  <div className="space-y-3">
+                    {result.report.strengths.map((strength, index) => (
+                      <div key={index} className="flex items-start gap-3 rounded-lg bg-green-500/10 border border-green-400/30 p-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
+                        <p className="text-white/80 text-sm">{strength}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Risks */}
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <AlertCircle className="w-5 h-5 text-red-400" />
+                    <h4 className="text-lg font-semibold text-white">Risks</h4>
+                  </div>
+                  <div className="space-y-3">
+                    {result.report.risks.map((risk, index) => (
+                      <div key={index} className="flex items-start gap-3 rounded-lg bg-red-500/10 border border-red-400/30 p-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-2 flex-shrink-0" />
+                        <p className="text-white/80 text-sm">{risk}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Investor Report */}

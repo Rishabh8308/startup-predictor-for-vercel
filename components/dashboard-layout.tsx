@@ -2,13 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Sparkles, LayoutDashboard, Target, BarChart3, Brain, Info, User, Menu, X } from "lucide-react"
+import { Sparkles, LayoutDashboard, Target, BarChart3, Brain, Info, User, Menu, X, Scale } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 
 const sidebarItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Predict Startup", href: "/predict", icon: Target },
+  { name: "Compare Startups", href: "/compare", icon: Scale },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Model Insights", href: "/insights", icon: Brain },
   { name: "About", href: "/about", icon: Info },

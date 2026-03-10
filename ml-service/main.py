@@ -44,11 +44,15 @@ def predict(request: PredictionRequest):
         request.founderExperience
     ]])
     
-    # Get prediction probability
-    prediction_prob = model.predict_proba(features)[0][1]
-    success_probability = round(prediction_prob * 100, 2)
+    # Get prediction probability from model
+    raw_prediction_prob = model.predict_proba(features)[0][1]
+    raw_percentage = raw_prediction_prob * 100
     
-    # Determine risk level
+    # Scale probability between 10% and 95% for better UX
+    # Formula: scaled = raw_percentage * (95 - 10) / 100 + 10
+    success_probability = round(raw_percentage * 0.85 + 10, 2)
+    
+    # Determine risk level based on scaled probability
     if success_probability > 70:
         risk_level = "low"
     elif success_probability > 40:

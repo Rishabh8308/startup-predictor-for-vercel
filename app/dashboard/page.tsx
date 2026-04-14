@@ -88,12 +88,20 @@ export default function DashboardPage() {
 
   const hasIdeas = savedIdeas.length > 0
 
-  const stats = [
+  const stats: {
+    title: string;
+    value: string;
+    change: string;
+    trend: "up" | "down" | "neutral";
+    icon: any;
+    description: string;
+    href: string;
+  }[] = [
     {
       title: "Ideas Analyzed",
       value: isMounted ? String(totalAnalyzed) : "—",
       change: totalAnalyzed > 0 ? "Real data" : "Start analyzing",
-      trend: "up" as const,
+      trend: "up",
       icon: Users,
       description: "saved in your library",
       href: "/ideas",

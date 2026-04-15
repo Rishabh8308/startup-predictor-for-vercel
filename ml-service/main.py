@@ -1,3 +1,11 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print("Gemini Key Loaded:", GEMINI_API_KEY[:10])
+
 import logging
 import os
 import json
@@ -18,7 +26,7 @@ from typing import Dict, Any, List
 # ─── Config ───────────────────────────────────────────────────────────────────
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+GEMINI_URL = GEMINI_URL = GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 # ─── ML Model ─────────────────────────────────────────────────────────────────
 
@@ -193,7 +201,13 @@ async def call_gemini(prompt: str) -> str:
             json=payload,
             headers={"Content-Type": "application/json"},
         )
+        if resp.status_code == 429:
+            raise HTTPException(
+        status_code=429,
+        detail="Gemini API rate limit reached. Please wait a minute and try again."
+        )
         resp.raise_for_status()
+
         data = resp.json()
 
     # Extract text from Gemini response structure
@@ -347,3 +361,12 @@ def health():
         "gemini_configured": bool(GEMINI_API_KEY),
         "ml_model": "loaded",
     }
+@app.get("/test-gemini")
+async def test_gemini():
+    try:
+        response = await call_gemini(
+            "Analyze startup idea: AI powered hiring platform"
+        )
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

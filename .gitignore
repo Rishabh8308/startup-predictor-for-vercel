@@ -1,0 +1,39 @@
+# Node
+node_modules/
+
+# Python
+.venv/
+venv/
+ml-service/venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment variables / secrets
+.env
+.env.local
+.env.*
+
+# ML files
+*.joblib
+*.pkl
+
+# Build / test artifacts
+dist/
+build/
+coverage/
+.coverage
+
+
+# Next.js
+.next/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
